@@ -2,6 +2,7 @@ const express = require("express");
 const Url = require("../models/url");
 const btoa = require("btoa");
 const atob = require("atob");
+var cors = require("cors");
 
 const router = express.Router();
 
@@ -29,7 +30,7 @@ router.get("/:hash", (req, res) => {
 });
 
 //POST
-router.post("/urls", (req, res, next) => {
+router.post("/urls", cors(), (req, res, next) => {
   const urlData = req.body.url;
   Url.findOne({ url: urlData }, (err, doc) => {
     if (doc) {

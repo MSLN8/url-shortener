@@ -17,17 +17,30 @@ class Form extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      allUrls: [],
       url: "",
       hash: "",
       isHidden: true
     };
   }
 
+  getAllUrls = () => {
+    axios
+      .get(`http://localhost:5000/api/urls`)
+      .then(response => {
+        console.log(response);
+        this.setState({ allUrls: response.data });
+      })
+      .catch(err => {
+        console.log(err, "something went wrong");
+      });
+  };
+
   createShortLink = async event => {
     event.preventDefault();
     const url = this.state.url;
     await axios
-      .post("https://localhost:5000/api/urls", { url })
+      .post("http://localhost:5000/api/urls", { url })
       .then(res => {
         const hash = res.data.hash;
         this.setState({ url: "", hash: hash });
@@ -42,30 +55,19 @@ class Form extends Component {
     });
   }
 
-  handleFormSubmit = event => {
-    event.preventDefault();
-    const url = this.state.url;
-    axios
-      .post("https://localhost:5000/api/urls", { url })
-      .then(res => {
-        const hash = res.data.hash;
-        this.setState({ url: "", hash: hash });
-      })
-      .then(this.toggleHidden())
-      .catch(error => console.log(error));
-  };
-
   handleChange = event => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
   };
 
+  componentDidMount() {
+    this.getAllUrls();
+  }
   render() {
     return (
       <Wrapper>
+        <Text> Simplify your links </Text>
         <FormWrapper>
-          <Text> Simplify your links </Text>
-          {/* <form onSubmit={this.handleFormSubmit}> */}
           <Input
             type="text"
             name="url"
@@ -77,19 +79,15 @@ class Form extends Component {
             type="submit"
             value="Shorten"
           />
-
-          {!this.state.isHidden && <ShortenUrl hash={this.state.hash} />}
-          {/* </form> */}
         </FormWrapper>
+        {!this.state.isHidden && <ShortenUrl hash={this.state.hash} />}
 
         <ListWrapper>
           <Text> Previous Urls</Text>
           <AllUrls>
-            <OneUrl> First Example </OneUrl>
-            <OneUrl> Second Example </OneUrl>
-            <OneUrl> Third Example </OneUrl>
-            <OneUrl> Forth Example </OneUrl>
-            <OneUrl> Fifth Example </OneUrl>
+            {this.state.allUrls.slice(0, 5).map(oneUrl => {
+              return <OneUrl key={oneUrl._id}> {oneUrl.url} </OneUrl>;
+            })}
           </AllUrls>
         </ListWrapper>
       </Wrapper>

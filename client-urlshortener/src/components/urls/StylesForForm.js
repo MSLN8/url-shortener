@@ -17,9 +17,7 @@ const Button = styled.input`
 
 const FormWrapper = styled.div`
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  flex-direction: column;
 `;
 
 const Input = styled.input`
