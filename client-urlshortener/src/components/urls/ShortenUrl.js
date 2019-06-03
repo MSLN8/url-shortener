@@ -38,9 +38,7 @@ class ShortenUrl extends Component {
           <Button type="submit" value="Copy" />
         </CopyToClipboard>
 
-        {this.state.copied ? (
-          <span style={{ color: "red" }}>Copied.</span>
-        ) : null}
+        {this.state.copied && <span style={{ color: "red" }}>Copied.</span>}
       </FormWrapper>
     );
   }

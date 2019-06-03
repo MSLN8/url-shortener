@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const Text = styled.h1`
-  line-height: 60px;
-  font-weight: 700;
+  line-height: 3.5rem;
+  font-weight: 45rem;
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.4);
   margin: 0;

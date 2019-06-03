@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
 
 import ShortenUrl from "./ShortenUrl";
+import api from "../../api";
 import {
   AllUrls,
   Button,
@@ -12,6 +12,7 @@ import {
   Text,
   Wrapper
 } from "./StylesForForm";
+const _ = require("lodash");
 
 class Form extends Component {
   constructor(props) {
@@ -25,8 +26,8 @@ class Form extends Component {
   }
 
   getAllUrls = () => {
-    axios
-      .get(`http://localhost:5000/api/urls`)
+    api
+      .get("/urls")
       .then(response => {
         console.log(response);
         this.setState({ allUrls: response.data });
@@ -39,8 +40,8 @@ class Form extends Component {
   createShortLink = async event => {
     event.preventDefault();
     const url = this.state.url;
-    await axios
-      .post("http://localhost:5000/api/urls", { url })
+    await api
+      .post("/urls", { url })
       .then(res => {
         const hash = res.data.hash;
         this.setState({ url: "", hash: hash });
@@ -64,6 +65,7 @@ class Form extends Component {
     this.getAllUrls();
   }
   render() {
+    const lastUrls = _.slice(this.state.allUrls, [0, 5]);
     return (
       <Wrapper>
         <Text> Simplify your links </Text>
@@ -72,10 +74,10 @@ class Form extends Component {
             type="text"
             name="url"
             value={this.state.url}
-            onChange={e => this.handleChange(e)}
+            onChange={this.handleChange}
           />
           <Button
-            onClick={e => this.createShortLink(e)}
+            onClick={this.createShortLink}
             type="submit"
             value="Shorten"
           />
@@ -85,8 +87,8 @@ class Form extends Component {
         <ListWrapper>
           <Text> Previous Urls</Text>
           <AllUrls>
-            {this.state.allUrls.slice(0, 5).map(oneUrl => {
-              return <OneUrl key={oneUrl._id}> {oneUrl.url} </OneUrl>;
+            {lastUrls.map(oneRequest => {
+              return <OneUrl key={oneRequest._id}> {oneRequest.url} </OneUrl>;
             })}
           </AllUrls>
         </ListWrapper>
